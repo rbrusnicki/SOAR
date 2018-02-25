@@ -53,6 +53,8 @@ def its(*arg):
     if not solution2.converged():
             print('itsme saying: solution has not converged :(')
 
+    solution2.preprocessPlot()
+
     return solution2
 
 
@@ -85,7 +87,10 @@ def itsP(*arg):
     if not solution2.converged():
             print('itsme saying: solution has not converged :(')
 
+    solution2.preprocessPlot()
+
     return solution2
+
 
 def sgra(fname: str):
 
