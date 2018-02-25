@@ -38,6 +38,7 @@ def its(*arg):
     print("Opening case: ", fname)
 
     con = initialize(fname).resultShow()
+    con['plot'] = False
 
     problem1 = problem(con, model)
 
@@ -54,6 +55,37 @@ def its(*arg):
 
     return solution2
 
+
+def itsP(*arg):
+
+    # arguments analisys
+    if len(arg) == 0:
+        fname = 'default.its'
+    elif len(arg) == 1:
+        fname = arg[0]
+    else:
+        raise Exception('itsme saying: too many arguments on its')
+
+    print("itsme: Inital Trajectory Setup Module")
+    print("Opening case: ", fname)
+
+    con = initialize(fname).resultShow()
+    con['plot'] = True
+
+    problem1 = problem(con, model)
+
+    solution1 = problem1.solveForInitialGuess()
+
+    solution1.displayResults()
+
+    solution2 = problem1.solveForFineTune()
+
+    solution2.displayResults()
+
+    if not solution2.converged():
+            print('itsme saying: solution has not converged :(')
+
+    return solution2
 
 def sgra(fname: str):
 
@@ -119,7 +151,7 @@ class initialize():
         modelConf.vehicle()
 
         con = modelConf.con
-
+        con['plot'] = False
         self.con = con
 
     def result(self):

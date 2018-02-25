@@ -61,33 +61,36 @@ def mdlDer(t: float, x: list, alfaProg: callable, betaProg: callable,
         sol['t [s]'] = t
         sol['h [km]'] = h
         sol['v [km]'] = v
-        sol['gamma [rad]'] = gamma
+        sol['\\gamma~[rad]'] = gamma
         sol['M [kg]'] = M
-        sol['dhdt [km/s]'] = ans[0]
-        sol['a [km/s2]'] = ans[1]
-        sol['dgdt [rad/s]'] = ans[2]
-        sol['dmdt [kg/s]'] = ans[3]
+        sol['\\alpha~[rad]'] = alfat
+        sol['dh/dt [km/s]'] = ans[0]
+        sol['a [km/s^2]'] = ans[1]
+        sol['dg/dt [rad/s]'] = ans[2]
+        sol['dm/dt [kg/s]'] = ans[3]
         sol['L [kN]'] = LM*M
         sol['D [kN]'] = DM*M
+
         dens, Patm, Tatm, asound = atm(h)
-        sol['rho [kg/km3]'] = dens
-        sol['Patm [kPa]'] = Patm
-        sol['Tatm [k]'] = Tatm
+        sol['\\rho~[kg/km^3]'] = dens
+        sol['P_{atm} [kPa]'] = Patm
+        sol['T_{atm} [k]'] = Tatm
         sol['v_{sound} [km/s]'] = asound
         sol['Mach [-]'] = v/asound
-        sol['qdin [kPa]'] = 0.5 * dens * (v**2)
-        sol['Peff [kN]'] = g*M
-        sol['Cl [-]'] = aed.CL0 + aed.CL1*alfat
-        sol['Cd [-]'] = aed.CD0 + aed.CD2*(alfat**2)
-        sol['theta [rad]'] = alfat + gamma
-        sol['btm [km/s2]'] = btm
+        sol['q_{din} [kPa]'] = 0.5 * dens * (v**2)
+        sol['C_{l} [-]'] = aed.CL0 + aed.CL1*alfat
+        sol['C_{d} [-]'] = aed.CD0 + aed.CD2*(alfat**2)
+        sol['\\theta~[rad]'] = alfat + gamma
+        sol['btm [km/s^2]'] = btm
+        sol['g_{eff} [kN]'] = g
+        sol['W_{eff} [kN]'] = g*M
 
         a, e, E, momAng, ph, ah, h = orbitCalculation(x, earth)
 
         sol['semi-major axis [km]'] = a
         sol['eccentricity [-]'] = e
         sol['E [GJ]'] = E
-        sol['momAng [GNm]'] = momAng
+        sol['Angular Moment [GNm]'] = momAng
         sol['ph [km]'] = ph
         sol['ah [km]'] = ah
 

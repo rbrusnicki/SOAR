@@ -437,17 +437,20 @@ class solution():
         # Results without orbital phase
         self.basic.displayInfo()
         self.basic.orbitResults()
-        self.basic.plotResults()
-        self.iteractionAltitude.plotLogErrors(['h'])
-        self.iteractionSpeedAndAng.plotLogErrors(['V', 'gamma', 'h'])
-        self.iteractionSpeedAndAng.plotFactors(['V', 'gamma', 'h'])
+
+        if self.con['plot']:
+            self.basic.plotResults()
+            self.iteractionAltitude.plotLogErrors(['h'])
+            self.iteractionSpeedAndAng.plotLogErrors(['V', 'gamma', 'h'])
+            self.iteractionSpeedAndAng.plotFactors(['V', 'gamma', 'h'])
 
         # Results with orbital phase
         if abs(self.basic.e - 1) > 0.1:
             # The eccentricity test avoids simulations too close
             # of the singularity
             self.orbital.orbitResults()
-            self.orbital.plotResults()
+            if self.con['plot']:
+                self.orbital.plotResults()
 
         print('Initial states:', self.basic.traj.xx[0])
         print('Final   states:', self.basic.traj.xx[-1])
@@ -488,8 +491,8 @@ class solution():
 
     def plot(self, entry1: str, entry2: str)-> tuple:
 
-	# for use latex you must run: sudo apt-get install texlive-xetex
-	# for use latex you must run: sudo apt-get install dvipng
+        # for use latex you must run: sudo apt-get install texlive-xetex
+        # for use latex you must run: sudo apt-get install dvipng
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.plot(self.basic.traj.solDict[entry1],
@@ -498,5 +501,24 @@ class solution():
                 self.basic.traj.solDictP[entry2], '.r')
         ax.set_xlabel(entry1)
         ax.set_ylabel(entry2)
+
+        return fig, ax
+
+    def plotLatex(self, entry1: str, entry2: str)-> tuple:
+
+        # for use latex you must run: sudo apt-get install texlive-xetex
+        # for use latex you must run: sudo apt-get install dvipng
+        plt.rc('text', usetex=True)
+        # plt.rc('font', family='serif')
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.plot(self.basic.traj.solDict[entry1],
+                self.basic.traj.solDict[entry2], '.-b',
+                self.basic.traj.solDictP[entry1],
+                self.basic.traj.solDictP[entry2], '.r')
+        ax.set_xlabel(entry1)
+        ax.set_ylabel(entry2)
+        plt.show()
+        plt.rc('text', usetex=False)
 
         return fig, ax
