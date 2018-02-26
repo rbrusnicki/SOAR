@@ -501,6 +501,7 @@ class solution():
                 self.basic.traj.solDictP[entry2], '.r')
         ax.set_xlabel(entry1)
         ax.set_ylabel(entry2)
+        ax.grid(True)
 
         return fig, ax
 
@@ -518,6 +519,7 @@ class solution():
                 self.basic.traj.solDictP[entry2], '.r')
         ax.set_xlabel(entry1)
         ax.set_ylabel(entry2)
+        ax.grid(True)
         plt.show()
         plt.rc('text', usetex=False)
 

@@ -29,13 +29,19 @@ def rhoFast(altitude):
         density = 0.0
 #        print("altitude must be in [0, 84852]\n")
     else:
-        for i in range(0, 8):
-            if altitude <= h_ref[i]:
-                if i == 0:
-                    temperature, pressure = cal(p_ref[i], t_ref[i], a[i], h_ref[i], altitude)
-                else:
-                    temperature, pressure = cal(p_ref[i], t_ref[i], a[i-1], h_ref[i], altitude)
-                break;
+        i = 0
+        for ii in range(0, 8):
+            if altitude <= h_ref[ii]:
+                i = ii
+                break
+
+        if i == 0:
+            temperature, pressure = cal(p_ref[i], t_ref[i], a[i], h_ref[i],
+                                        altitude)
+        else:
+            temperature, pressure = cal(p_ref[i], t_ref[i], a[i-1], h_ref[i],
+                                        altitude)
+
         density = pressure / (R * temperature)     # kg/m^3
         density *= 1e9                             # converting to kg/km^3
 #    strformat = 'Altitude: {0:.1f} \nTemperature: {1:.3f} \nPressure: {2:.3f} \nDensity: {3:.6f}\n'
@@ -59,15 +65,17 @@ def atm(altitude):
         pressure = p_ref[-1]
         temperature = t_ref[-1]
     else:
-        for i in range(0, 8):
-            if altitude <= h_ref[i]:
-                if i == 0:
-                    temperature, pressure = cal(p_ref[i], t_ref[i], a[i],
-                                                h_ref[i], altitude)
-                else:
-                    temperature, pressure = cal(p_ref[i], t_ref[i], a[i-1],
-                                                h_ref[i], altitude)
+        i = 0
+        for ii in range(0, 8):
+            if altitude <= h_ref[ii]:
+                i = ii
                 break
+        if i == 0:
+            temperature, pressure = cal(p_ref[i], t_ref[i], a[i], h_ref[i],
+                                        altitude)
+        else:
+            temperature, pressure = cal(p_ref[i], t_ref[i], a[i-1], h_ref[i],
+                                        altitude)
 
     density = pressure / (R * temperature)          # kg/m^3
     density *= 1e9                                  # converting to kg/km^3

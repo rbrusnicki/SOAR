@@ -57,13 +57,16 @@ def mdlDer(t: float, x: list, alfaProg: callable, betaProg: callable,
 
     if allResults:
 
+        # Solution tables dictionary
         sol = dict()
         sol['t [s]'] = t
         sol['h [km]'] = h
         sol['v [km]'] = v
         sol['\\gamma~[rad]'] = gamma
+        sol['\\gamma~[deg]'] = gamma*180/numpy.pi
         sol['M [kg]'] = M
         sol['\\alpha~[rad]'] = alfat
+        sol['\\alpha~[deg]'] = alfat*180/numpy.pi
         sol['dh/dt [km/s]'] = ans[0]
         sol['a [km/s^2]'] = ans[1]
         sol['dg/dt [rad/s]'] = ans[2]
@@ -73,6 +76,7 @@ def mdlDer(t: float, x: list, alfaProg: callable, betaProg: callable,
 
         dens, Patm, Tatm, asound = atm(h)
         sol['\\rho~[kg/km^3]'] = dens
+        sol['\\rho~[kg/m^3]'] = dens*1e-9
         sol['P_{atm} [kPa]'] = Patm
         sol['T_{atm} [k]'] = Tatm
         sol['v_{sound} [km/s]'] = asound
@@ -81,8 +85,10 @@ def mdlDer(t: float, x: list, alfaProg: callable, betaProg: callable,
         sol['C_{l} [-]'] = aed.CL0 + aed.CL1*alfat
         sol['C_{d} [-]'] = aed.CD0 + aed.CD2*(alfat**2)
         sol['\\theta~[rad]'] = alfat + gamma
+        sol['\\theta~[deg]'] = (alfat + gamma)*180/numpy.pi
         sol['btm [km/s^2]'] = btm
-        sol['g_{eff} [kN]'] = g
+        sol['g_{eff} [km/s^2]'] = g
+        sol['g_{eff} [m/s^2]'] = g*1e3
         sol['W_{eff} [kN]'] = g*M
 
         a, e, E, momAng, ph, ah, h = orbitCalculation(x, earth)
