@@ -75,6 +75,7 @@ class problem():
         df = abs((self.fsup[index] - self.finf[index])/self.con['Ndiv'])
 
         factors = (self.fsup + self.finf)/2
+        self.modelObj = self.model(factors, self.con)
         errors, factors = self.__bisecSpeedAndAng(factors)
         self.iteractionSpeedAndAng.update(errors, factors)
 
@@ -124,9 +125,9 @@ class problem():
         # Making the 3 factor variarions null
         df[2] = 0.0
 
-        model1 = self.model(factors1, self.con)
-        model1.simulate("design")
-        errors1 = model1.errors
+        self.modelObj.reset(factors1)
+        self.modelObj.simulate("design")
+        errors1 = self.modelObj.errors
         self.iteractionSpeedAndAng.update(errors1, factors1)
 
         factors2 = factors1 - df
@@ -137,9 +138,10 @@ class problem():
         while ((not stop) and
                (self.iteractionSpeedAndAng.countLocal <= self.con['Nmax'])):
             # Error update
-            model1 = self.model(factors2, self.con)
-            model1.simulate("design")
-            errors2 = model1.errors
+            # model1 = self.model(factors2, self.con)
+            self.modelObj.reset(factors2)
+            self.modelObj.simulate("design")
+            errors2 = self.modelObj.errors
 
             update(errors2, factors2)
 

@@ -137,36 +137,12 @@ class model():
 
     def __init__(self, factors: list, con: dict):
 
-        self.factors = factors
         self.con = con
         self.traj = modelTrajectory()
         self.flagAppend = False
         self.simulCounter = 0
 
-        #######################################################################
-        # Delta V estimates
-        fdv2, ftf, fdv1 = self.factors
-        Dv1 = fdv1*con['Dv1ref']
-        tf = ftf*con['tref']
-        Dv2 = con['V_final'] - fdv2*con['vxref']
-        self.Dv2 = Dv2
-        # print('V_final: ', con['V_final'])
-
-        #######################################################################
-        # Staging calculation
-        self.p1, self.p2 = stagingCalculate(self.con, Dv1, Dv2)
-
-        #######################################################################
-        # Thrust program
-        if con['homogeneous']:
-            tabBeta = modelPropulsion(self.p1, self.p2, tf, 1.0, 0.0,
-                                      con['softness'], con['Isp'], con['T'])
-        else:
-            tabBeta = modelPropulsionHetSimple(self.p1, self.p2, tf, 1.0, 0.0)
-        if tabBeta.fail:
-            raise Exception('itsme saying: Softness too high!')
-        self.tabBeta = tabBeta
-        # self.tabBeta.show()
+        self.__setFactors(factors)
 
         #######################################################################
         # Attitude program definition
@@ -177,6 +153,41 @@ class model():
 
         self.aed = modelAed(con)
         self.earth = modelEarth(con)
+
+    def reset(self, factors):
+
+        self.traj = modelTrajectory()
+        self.__setFactors(factors)
+        self.simulCounter = 0
+
+    def __setFactors(self, factors):
+
+        #######################################################################
+        # Delta V estimates
+        self.factors = factors
+        fdv2, ftf, fdv1 = factors
+        Dv1 = fdv1*self.con['Dv1ref']
+        tf = ftf*self.con['tref']
+        Dv2 = self.con['V_final'] - fdv2*self.con['vxref']
+        self.Dv2 = Dv2
+        # print('V_final: ', con['V_final'])
+
+        #######################################################################
+        # Staging calculation
+        self.p1, self.p2 = stagingCalculate(self.con, Dv1, Dv2)
+
+        #######################################################################
+        # Thrust program
+        if self.con['homogeneous']:
+            tabBeta = modelPropulsion(self.p1, self.p2, tf, 1.0, 0.0,
+                                      self.con['softness'], self.con['Isp'],
+                                      self.con['T'])
+        else:
+            tabBeta = modelPropulsionHetSimple(self.p1, self.p2, tf, 1.0, 0.0)
+        if tabBeta.fail:
+            raise Exception('itsme saying: Softness too high!')
+        self.tabBeta = tabBeta
+        # self.tabBeta.show()
 
     def __integrate(self, ode45: object, t0: float, x0)-> None:
 
